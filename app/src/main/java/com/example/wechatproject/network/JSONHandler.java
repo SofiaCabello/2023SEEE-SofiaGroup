@@ -37,6 +37,20 @@ public class JSONHandler {
         return json;
     }
 
+    //生成base64编码的JSON对象
+    public static JSONObject genetateBase64JSON(String userID, String base64, String destID, String type) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("userID", userID);
+            json.put("destID", destID);
+            json.put("base64", base64);
+            json.put("type", type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 
     //解析消息传递JSON字符串
     public static List<String> parseMessageJSON(String json) throws JSONException {
