@@ -5,6 +5,10 @@ package com.example.wechatproject.util;
  * 用以存储当前用户信息，作为全局变量使用。
  */
 public class CurrentUserInfo {
-    public static String userID = null;
-    public static String username = null;
+    public String userID;
+    public String username;
+    public void setUserID(String userID){ this.userID = userID; }
+    public void setUsername(String username){ this.username = username; }
+    public String getUserID(){ return userID; }
+    public String getUsername(){ return username; }
 }

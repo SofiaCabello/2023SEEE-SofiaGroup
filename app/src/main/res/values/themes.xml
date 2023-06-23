@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.WeChatProject" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/lightblue_1</item>
-        <item name="colorPrimaryVariant">@color/lightblue_2</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">#0F0F0F</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

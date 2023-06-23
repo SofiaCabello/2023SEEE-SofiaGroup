@@ -15,12 +15,14 @@ import android.widget.FrameLayout;
 
 import com.example.wechatproject.contact.ContactFragment;
 import com.example.wechatproject.message.MessageFragment;
+import com.example.wechatproject.network.HeartbeatTask;
 import com.example.wechatproject.user.UserFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.z.fileselectorlib.FileSelectorSettings;
 import com.z.fileselectorlib.Objects.FileInfo;
 
 import java.util.ArrayList;
+import java.util.Timer;
 
 /*
  * 这是MainActivity类，主要包含了底部导航栏的切换功能。
@@ -32,14 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
     private Fragment currentFragment;
     private FragmentManager fragmentManager;
-
-
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         System.out.println("Hello World"); // 测试语句
+
+        //timer.schedule(new HeartbeatTask(),0,5000); // 每5秒发送一次心跳包
 
         //绑定控件
         fragmentContainer = findViewById(R.id.fragmentContainer);
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     //切换fragment方法
     private void switchFragment(Fragment fragment) {
         if(currentFragment == fragment){
@@ -112,22 +116,5 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
         currentFragment = fragment;
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FileSelectorSettings.FILE_LIST_REQUEST_CODE && resultCode == FileSelectorSettings.BACK_WITH_SELECTIONS){
-            assert data != null;
-            Bundle bundle=data.getExtras();
-            assert bundle != null;
-            ArrayList<String> FilePathSelected
-                    =bundle.getStringArrayList(FileSelectorSettings.FILE_PATH_LIST_REQUEST);
-            for (String file_path :
-                    FilePathSelected) {
-                Log.v("file_sel", file_path);
-            }
-        }
-    }
-
 
 }
