@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.example.wechatproject.contact.ContactFragment;
 import com.example.wechatproject.message.MessageFragment;
+import com.example.wechatproject.network.FileUtil;
 import com.example.wechatproject.network.HeartbeatTask;
 import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.user.UserFragment;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 if (type.equals("0")) {
                     dbHelper.addMessage(sendId,content,TS);
                 }else{
-                    String filePath = JSONHandler.base64ToFile(content, type);
+                    String filePath = FileUtil.base64ToFile(content, type);
                     dbHelper.addMessage(sendId, filePath, TS);
                 }
             }
