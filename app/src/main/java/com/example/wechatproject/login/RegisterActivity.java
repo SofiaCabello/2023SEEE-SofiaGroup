@@ -1,6 +1,6 @@
-package com.example.wechatproject.LoginActivity;
+package com.example.wechatproject.login;
 
-import static com.example.wechatproject.network.JSONHandler.generateLoginJSON;
+import static com.example.wechatproject.network.JSONHandler.generateRegisterJSON;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,12 +18,12 @@ import com.example.wechatproject.util.CurrentUserInfo;
 
 import java.util.Objects;
 
-public class WeChatLoginActivity extends AppCompatActivity {//登陆界面
+public class RegisterActivity extends AppCompatActivity {//注册界面
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wechatlogin);
+        setContentView(R.layout.activity_register);
 
         // 获取布局中的控件
         EditText usernameEditText = findViewById(R.id.usernameEditText);
@@ -34,23 +34,22 @@ public class WeChatLoginActivity extends AppCompatActivity {//登陆界面
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 处理登录按钮的点击事件
+                // 处理登录按钮的点击事件，向服务器发送JSON并等待服务器返回信息
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-
-                // 假设数据库中的用户名和密码为 "admin" 和 "password"，进行简单验证
-                if (Objects.equals(Client.sendJSON(generateLoginJSON(username, password)), "true")) {
-                    // 登录成功，跳转到微信主界面，并传递用户名
-                    new CurrentUserInfo().setUsername(username);
-                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
+                // 向服务器发送JSON
+                if(Objects.equals(Client.sendJSON(generateRegisterJSON(username, password, 0, 0, null)), "true")){
+                    // 注册成功，跳转到微信主界面，并传递用户名
+                    CurrentUserInfo.getInstance().setUsername(username);
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish(); // 结束当前登录界面
-                } else {
-                    // 登录失败，弹出错误消息
-                    Toast.makeText(WeChatLoginActivity.this, "用户名或密码不正确", Toast.LENGTH_SHORT).show();
+                }else{
+                    // 注册失败，弹出错误消息
+                    Toast.makeText(RegisterActivity.this, "用户名已存在", Toast.LENGTH_SHORT).show();
 
-//                    // 这是测试用跳转，测试完毕后删除
-//                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
+//                    //这是测试用跳转，测试完毕后删除
+//                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
 //                    startActivity(intent);
 //                    finish(); // 结束当前登录界面
                 }

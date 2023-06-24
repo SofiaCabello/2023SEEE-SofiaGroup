@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true">
 
-        <activity android:name=".LoginActivity.LoginActivity"
+        <activity android:name=".login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,10 +26,10 @@
                 <!-- 此处将LoginActivity设置为首先进入的界面 -->
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity.RegisterActivity"
+        <activity android:name=".login.RegisterActivity"
             android:exported="true">
         </activity>
-        <activity android:name=".LoginActivity.WeChatLoginActivity"
+        <activity android:name=".login.WeChatLoginActivity"
             android:exported="true">
         </activity>
 

@@ -1,9 +1,8 @@
-package com.example.wechatproject.LoginActivity;
+package com.example.wechatproject.login;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
