@@ -39,7 +39,8 @@ public class WeChatLoginActivity extends AppCompatActivity {//登陆界面
                 String password = passwordEditText.getText().toString();
 
                 // 假设数据库中的用户名和密码为 "admin" 和 "password"，进行简单验证
-                if (Objects.equals(Client.sendJSON(generateLoginJSON(username, password)), "true")) {
+                //if (Objects.equals(Client.sendJSON(generateLoginJSON(username, password)), "true"))
+                if(username.equals("admin")&&password.equals("password")){//此处在数据库建立修改后删除，作为登陆判断
                     // 登录成功，跳转到微信主界面，并传递用户名
                     CurrentUserInfo.getInstance().setUsername(username);
                     Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);

@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--请将按钮和布局设置更美观一些！-->
+    <Button
+        android:id="@+id/buttonChangeAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Avatar"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp" />
+
+    <Button
+        android:id="@+id/buttonChangeUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Username"
+        android:layout_below="@id/buttonChangeAvatar"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+    <Button
+        android:id="@+id/buttonChangeSignature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Signature"
+        android:layout_below="@id/buttonChangeUsername"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+</RelativeLayout>
