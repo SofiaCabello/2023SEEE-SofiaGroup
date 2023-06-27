@@ -50,10 +50,10 @@ public class WeChatLoginActivity extends AppCompatActivity {//登陆界面
                     // 登录失败，弹出错误消息
                     Toast.makeText(WeChatLoginActivity.this, "用户名或密码不正确", Toast.LENGTH_SHORT).show();
 
-//                    // 这是测试用跳转，测试完毕后删除
-//                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                    finish(); // 结束当前登录界面
+                    // 这是测试用跳转，测试完毕后删除
+                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // 结束当前登录界面
                 }
             }
         });

@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNav);
         fragmentManager = getSupportFragmentManager();
 
-        //测试语句，测试完毕后删除
-        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, new TestFragment()).commit();
+//        //测试语句，测试完毕后删除
+//        fragmentManager.beginTransaction().replace(R.id.fragmentContainer, new TestFragment()).commit();
 
         //切换fragment
         bottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,13 +95,13 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navMessage:
                         switchFragment(new MessageFragment());
-                        return true;
+                        break;
                     case R.id.navContact:
                         switchFragment(new ContactFragment());
-                        return true;
+                        break;
                     case R.id.navUser:
                         switchFragment(new UserFragment());
-                        return true;
+                        break;
                 }
                 fragmentManager.beginTransaction().replace(R.id.fragmentContainer, currentFragment).commit();
                 return true;

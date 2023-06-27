@@ -48,10 +48,10 @@ public class RegisterActivity extends AppCompatActivity {//注册界面
                     // 注册失败，弹出错误消息
                     Toast.makeText(RegisterActivity.this, "用户名已存在", Toast.LENGTH_SHORT).show();
 
-//                    //这是测试用跳转，测试完毕后删除
-//                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-//                    startActivity(intent);
-//                    finish(); // 结束当前登录界面
+                    //这是测试用跳转，测试完毕后删除
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // 结束当前登录界面
                 }
             }
         });
