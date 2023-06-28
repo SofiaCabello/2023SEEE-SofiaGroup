@@ -56,6 +56,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginTop="25dp"
+        android:background="@drawable/button_drawable"
         android:text="设置" />
 
 </RelativeLayout>

@@ -11,9 +11,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.example.wechatproject.contact.ContactFragment;
+import com.example.wechatproject.message.Add_friendsActivity;
 import com.example.wechatproject.message.MessageFragment;
 import com.example.wechatproject.network.FileUtil;
 import com.example.wechatproject.network.HeartbeatTask;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment currentFragment;
     private FragmentManager fragmentManager;
     private Timer timer;
+    private ImageButton button_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +137,17 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
+
+
+        button_image=findViewById(R.id.image_add);
+        //加好友界面加载
+        button_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Add_friendsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -154,5 +169,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
         currentFragment = fragment;
     }
+
 
 }
