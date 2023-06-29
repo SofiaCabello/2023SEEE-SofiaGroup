@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="#393a3e"
+        android:background="@drawable/button_drawable"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:text="@string/login_button_text" />
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textSize="24sp"
-        android:background="#393a3e"
+        android:background="@drawable/button_drawable"
         android:textColor="#FFFFFF"
         android:text="@string/register_button_text" />
 

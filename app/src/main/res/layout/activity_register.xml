@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/register_button_text"
+        android:background="@drawable/button_drawable"
         android:layout_marginTop="16dp"/>
 
 </LinearLayout>
