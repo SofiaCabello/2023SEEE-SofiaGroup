@@ -4,18 +4,20 @@
     <!--请将按钮和布局设置更美观一些！-->
     <Button
         android:id="@+id/buttonChangeAvatar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Change Avatar"
+        android:backgroundTint="#00FF00"
         android:background="@drawable/button_drawable"
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp" />
 
     <Button
         android:id="@+id/buttonChangeUsername"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Change Username"
+        android:backgroundTint="#00FF00"
         android:background="@drawable/button_drawable"
         android:layout_below="@id/buttonChangeAvatar"
         android:layout_marginTop="16dp"
@@ -23,9 +25,10 @@
 
     <Button
         android:id="@+id/buttonChangeSignature"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Change Signature"
+        android:backgroundTint="#00FF00"
         android:background="@drawable/button_drawable"
         android:layout_below="@id/buttonChangeUsername"
         android:layout_marginTop="16dp"

@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/navUser">
+    android:id="@+id/addfriends_card">
 
     <ImageView
         android:id="@+id/imageViewAvatar"
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="150dp"
         android:layout_marginTop="131dp"
-        android:text="Username"
+        android:text="用户名字"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -45,10 +45,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="54dp"
-        android:text="发表个签，展示你的独特态度" />
+        android:text="欢迎使用Android微信,快加入更多好友吧！" />
 
     <Button
-        android:id="@+id/buttonSettings"
+        android:id="@+id/buttonAdd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewSignature"
@@ -56,8 +56,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginTop="25dp"
-        android:backgroundTint="#00FF00"
         android:background="@drawable/button_drawable"
-        android:text="设置" />
+        android:backgroundTint="#00FF00"
+        android:text="加好友" />
 
 </RelativeLayout>

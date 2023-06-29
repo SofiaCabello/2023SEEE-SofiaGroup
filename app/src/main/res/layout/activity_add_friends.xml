@@ -4,7 +4,7 @@
 
     <!-- 图片 -->
     <ImageView
-        android:id="@+id/imageViewWeChatLogo"
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
@@ -36,6 +36,7 @@
             android:textSize="20sp"
             android:background="@drawable/button_drawable"
             android:textColor="#ffffff"
+            android:backgroundTint="#00FF00"
             android:text="搜索" />
 
     </LinearLayout>
@@ -63,6 +64,7 @@
             android:id="@+id/imageViewProfile"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:src="@drawable/avatar_placeholder"
             android:layout_gravity="center_horizontal" />
 
         <!-- 用户名 -->

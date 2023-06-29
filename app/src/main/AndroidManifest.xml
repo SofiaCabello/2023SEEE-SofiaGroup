@@ -40,8 +40,14 @@
         <activity android:name=".user.SettingsActivity"
             android:exported="true">
         </activity>
-        <activity android:name=".message.Add_friendsActivity"
+        <activity android:name=".contact.Add_friendsActivity"
         android:exported="true">
+        </activity>
+        <activity android:name=".contact.AddFriends_CardActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".contact.Friends_CardActivity"
+            android:exported="true">
         </activity>
     </application>
 

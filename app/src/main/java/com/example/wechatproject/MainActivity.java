@@ -1,7 +1,6 @@
 package com.example.wechatproject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -16,7 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.example.wechatproject.contact.ContactFragment;
-import com.example.wechatproject.message.Add_friendsActivity;
+import com.example.wechatproject.contact.Add_friendsActivity;
 import com.example.wechatproject.message.MessageFragment;
 import com.example.wechatproject.network.FileUtil;
 import com.example.wechatproject.network.HeartbeatTask;
@@ -24,10 +23,7 @@ import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.user.UserFragment;
 import com.example.wechatproject.util.DBHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.z.fileselectorlib.FileSelectorSettings;
-import com.z.fileselectorlib.Objects.FileInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 

@@ -1,6 +1,7 @@
-package com.example.wechatproject.message;
+package com.example.wechatproject.contact;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.wechatproject.MainActivity;
 import com.example.wechatproject.R;
+import com.example.wechatproject.user.SettingsActivity;
 
 public class Add_friendsActivity extends AppCompatActivity {
 
@@ -22,6 +25,7 @@ public class Add_friendsActivity extends AppCompatActivity {
     private LinearLayout layoutUserInfo;
     private ImageView imageViewProfile;
     private TextView textViewUsername;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class Add_friendsActivity extends AppCompatActivity {
         layoutUserInfo = findViewById(R.id.layoutUserInfo);
         imageViewProfile = findViewById(R.id.imageViewProfile);
         textViewUsername = findViewById(R.id.textViewUsername);
+        imageView = findViewById(R.id.imageViewProfile);
 
         // 设置搜索按钮点击事件
         buttonSearch.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +66,7 @@ public class Add_friendsActivity extends AppCompatActivity {
                         showUserNotExistMessage(false);
                         showUserInfo(true);
 
+
                     } else {
                         // 用户不存在，显示用户不存在的消息提示
                         showUserNotExistMessage(true);
@@ -82,6 +88,13 @@ public class Add_friendsActivity extends AppCompatActivity {
     private void showUserInfo(boolean show) {
         if (show) {
             layoutUserInfo.setVisibility(View.VISIBLE);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Add_friendsActivity.this, AddFriends_CardActivity.class);
+                    startActivity(intent);
+                }
+            });
         } else {
             layoutUserInfo.setVisibility(View.GONE);
         }
