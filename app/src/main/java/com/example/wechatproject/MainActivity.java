@@ -1,7 +1,6 @@
 package com.example.wechatproject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -9,26 +8,19 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.wechatproject.contact.ContactFragment;
 import com.example.wechatproject.message.Add_friendsActivity;
 import com.example.wechatproject.message.MessageFragment;
-import com.example.wechatproject.network.FileUtil;
-import com.example.wechatproject.network.HeartbeatTask;
-import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.user.UserFragment;
 import com.example.wechatproject.util.DBHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.z.fileselectorlib.FileSelectorSettings;
-import com.z.fileselectorlib.Objects.FileInfo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 
 /**
@@ -44,11 +36,13 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private Timer timer;
     private ImageButton button_image;
+    private TextView weixintext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        weixintext=findViewById(R.id.weixintext);
         System.out.println("Hello World"); // 测试语句
 
         DBHelper dbHelper = new DBHelper(this);
@@ -130,10 +124,12 @@ public class MainActivity extends AppCompatActivity {
                 case "contact":
                     switchFragment(new ContactFragment());
                     bottomNav.setSelectedItemId(R.id.navContact);
+                    weixintext.setText("联系人");
                     break;
                 case "user":
                     switchFragment(new UserFragment());
                     bottomNav.setSelectedItemId(R.id.navUser);
+                    weixintext.setText("我");
                     break;
             }
         }

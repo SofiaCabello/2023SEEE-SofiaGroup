@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/navUser">
+    android:id="@+id/friends_card">
 
+    <!--点击联系人中的信息会显示这个界面-->
     <ImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="120dp"
@@ -14,7 +15,7 @@
         android:src="@drawable/avatar_placeholder" />
 
     <TextView
-        android:id="@+id/textViewUsername"
+        android:id="@+id/textViewname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -22,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="150dp"
         android:layout_marginTop="131dp"
-        android:text="Username"
+        android:text="好友备注"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -45,10 +46,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="54dp"
-        android:text="发表个签，展示你的独特态度" />
+        android:text="欢迎使用Android微信，快来跟朋友发消息吧！" />
 
     <Button
-        android:id="@+id/buttonSettings"
+        android:id="@+id/buttonmessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewSignature"
@@ -56,8 +57,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginTop="25dp"
-        android:backgroundTint="#00FF00"
         android:background="@drawable/button_drawable"
-        android:text="设置" />
+        android:backgroundTint="#00FF00"
+        android:text="发消息" />
 
 </RelativeLayout>

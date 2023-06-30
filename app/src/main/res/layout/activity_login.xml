@@ -20,12 +20,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:background="@drawable/button_drawable"
+        android:backgroundTint="#00FF00"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:text="@string/login_button_text" />
 
     <Button
-        android:backgroundTint="#393a3e"
+        android:backgroundTint="#00FF00"
         android:id="@+id/buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
