@@ -26,7 +26,7 @@ public class JSONHandler {
     private static Context context;
 
     //生成注册JSON对象
-    public static JSONObject generateRegisterJSON(String username, String password, int usergender, int photoId, String siganture) {
+    public static JSONObject generateRegisterJSON(String username, String password, int usergender, String photoId, String siganture) {
         JSONObject json = new JSONObject();
         try {
             json.put("type", "register");
@@ -36,6 +36,35 @@ public class JSONHandler {
             json.put("photoId", photoId);
             json.put("signature", siganture);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    //生成更新JSON对象
+    public static JSONObject generateUpdateJSON(String username, String password, int usergender, String photoId, String siganture, String fileType) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("type", "update");
+            json.put("username", username);
+            json.put("password", password);
+            json.put("usergender", usergender);
+            json.put("photoId", photoId);
+            json.put("signature", siganture);
+            json.put("fileType",fileType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    public static JSONObject generateAddFriendJSON(String username, String targetUsername){
+        JSONObject json = new JSONObject();
+        try{
+            json.put("type","addFriend");
+            json.put("username",username);
+            json.put("targetUsername",targetUsername);
+        } catch(Exception e){
             e.printStackTrace();
         }
         return json;

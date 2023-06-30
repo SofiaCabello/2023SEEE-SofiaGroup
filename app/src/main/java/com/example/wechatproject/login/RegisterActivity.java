@@ -18,6 +18,8 @@ import com.example.wechatproject.util.CurrentUserInfo;
 
 import java.util.Objects;
 
+
+
 public class RegisterActivity extends AppCompatActivity {//注册界面
 
     @Override
@@ -34,27 +36,24 @@ public class RegisterActivity extends AppCompatActivity {//注册界面
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 处理登录按钮的点击事件，向服务器发送JSON并等待服务器返回信息
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                // 向服务器发送JSON
-                if(Objects.equals(Client.sendJSON(generateRegisterJSON(username, password, 0, 0, null)), "true")){
-                    // 注册成功，跳转到微信主界面，并传递用户名
-                    CurrentUserInfo.getInstance().setUsername(username);
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish(); // 结束当前登录界面
-                }else{
-                    // 注册失败，弹出错误消息
-                    Toast.makeText(RegisterActivity.this, "用户名已存在", Toast.LENGTH_SHORT).show();
+                Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted(){
+                    @Override
+                    public void onTaskCompleted(String response){
+                        if (Objects.equals(response, "true")) {
+                            Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                            CurrentUserInfo.getInstance().setUsername(username);
+                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "注册失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
-                    //这是测试用跳转，测试完毕后删除
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish(); // 结束当前登录界面
-                }
+                sendJSONTask.execute(generateRegisterJSON(username, password, 0, "null", "null"));
             }
         });
-    }
-
+        }
 }

@@ -1,6 +1,8 @@
 package com.example.wechatproject.message;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.FileUtil;
+import com.example.wechatproject.network.JSONHandler;
+import com.example.wechatproject.util.CurrentUserInfo;
+
+import org.json.JSONObject;
 
 public class Add_friendsActivity extends AppCompatActivity {
 
@@ -39,37 +47,71 @@ public class Add_friendsActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = editTextUsername.getText().toString().trim();
+                System.out.println("------点击搜索按钮-----");
+                String targetUsername = editTextUsername.getText().toString().trim();
 
                 // TODO: 在数据库中根据用户名进行搜索，判断用户是否存在
 
-                if (username.isEmpty()) {
+                if (targetUsername.isEmpty()) {
                     // 用户名为空，显示用户不存在的消息提示
                     Toast.makeText(Add_friendsActivity.this, "请输入用户名!", Toast.LENGTH_SHORT).show();
                 } else {
                     // 用户名不为空，根据搜索结果进行显示用户信息或用户不存在的消息提示
-                    if (/* 用户存在 */true) {//这里需要更改，为防止报错，我在此处添加了true,
-                        // 这个if空里面的是上面匹配数据库中应当定义的函数返回的true或者false
+                    Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+                        @Override
+                        public void onTaskCompleted(String response) {
+                            if (!response.isEmpty()) {
+                                // TODO: 这里写本地数据库逻辑，包括是否已经添加了好友，以及没有添加好友的情况下的添加好友逻辑
+                                // response是服务器返回的用户信息JSON字符串，下面解析JSON字符串并显示用户信息
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        JSONObject jsonObject = null;
+                                        try {
+                                            jsonObject = new JSONObject(response);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
+                                        if (jsonObject != null) {
+                                            String friendName = jsonObject.optString("friendName");
+                                            String friendPhotoId = jsonObject.optString("friendPhotoId");
+                                            String filePath = FileUtil.base64ToFile(getApplicationContext(),friendPhotoId, "1");
+                                            System.out.println("filePath: " + filePath);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    imageViewProfile.setImageURI(Uri.parse("file://" + filePath));
+                                                    textViewUsername.setText(friendName);
+                                                    showUserNotExistMessage(false);
+                                                    showUserInfo(true);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }).start();
 
-                        // 更新用户信息
-                        // TODO: 根据搜索结果更新用户信息
-                        /*如果存在，则imageViewProfile用户头像和textViewUsername用户名
-                        设置为搜索到的数据库中的数据，后面的layout会有显示*/
-
-                        // 显示用户信息
-                        showUserNotExistMessage(false);
-                        showUserInfo(true);
-
-                    } else {
-                        // 用户不存在，显示用户不存在的消息提示
-                        showUserNotExistMessage(true);
-                        showUserInfo(false);
-                    }
+                            } else{
+                                showUserNotExistMessage(true);
+                                showUserInfo(false);
+                                Toast.makeText(Add_friendsActivity.this, "用户不存在!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    sendJSONTask.execute(JSONHandler.generateAddFriendJSON(CurrentUserInfo.getUsername(), targetUsername));
                 }
             }
         });
+
+        imageViewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Intent intent = new Intent(Add_friendsActivity.this, FriendInfoActivity.class);
+            }
+        });
     }
+
+
 
     // 显示或隐藏用户不存在的消息提示
     private void showUserNotExistMessage(boolean show) {

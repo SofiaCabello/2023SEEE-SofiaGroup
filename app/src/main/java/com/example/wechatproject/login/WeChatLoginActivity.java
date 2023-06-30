@@ -38,23 +38,21 @@ public class WeChatLoginActivity extends AppCompatActivity {//登陆界面
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                // 假设数据库中的用户名和密码为 "admin" 和 "password"，进行简单验证
-                //if (Objects.equals(Client.sendJSON(generateLoginJSON(username, password)), "true"))
-                if(username.equals("admin")&&password.equals("password")){//此处在数据库建立修改后删除，作为登陆判断
-                    // 登录成功，跳转到微信主界面，并传递用户名
-                    CurrentUserInfo.getInstance().setUsername(username);
-                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish(); // 结束当前登录界面
-                } else {
-                    // 登录失败，弹出错误消息
-                    Toast.makeText(WeChatLoginActivity.this, "用户名或密码不正确", Toast.LENGTH_SHORT).show();
+                Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted(){
+                    @Override
+                    public void onTaskCompleted(String response){
+                        if (Objects.equals(response, "true")) {
+                            Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                            CurrentUserInfo.getInstance().setUsername(username);
+                            Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
-                    // 这是测试用跳转，测试完毕后删除
-                    Intent intent = new Intent(WeChatLoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish(); // 结束当前登录界面
-                }
+                sendJSONTask.execute(generateLoginJSON(username, password));
             }
         });
     }

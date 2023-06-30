@@ -9,7 +9,7 @@ package com.example.wechatproject.util;
  */
 public class CurrentUserInfo {
     private static CurrentUserInfo instance;
-    private String username;
+    private static String username;
 
     private CurrentUserInfo() {}
 
@@ -20,7 +20,7 @@ public class CurrentUserInfo {
         return instance;
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         return username;
     }
 
