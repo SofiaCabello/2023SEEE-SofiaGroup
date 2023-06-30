@@ -3,6 +3,8 @@ package com.example.wechatproject.network;
 import static com.example.wechatproject.network.JSONHandler.generateGetContentJSON;
 import static com.example.wechatproject.network.JSONHandler.parseGetJSON;
 
+import android.content.Context;
+
 import com.example.wechatproject.util.CurrentUserInfo;
 
 import org.json.JSONException;
@@ -19,11 +21,15 @@ import java.util.TimerTask;
 
 public class HeartbeatTask extends TimerTask {
     private String response;
+    public Context context;
 
     @Override
     public void run() {
         try {
-            response = Client.sendJSON(generateGetContentJSON(CurrentUserInfo.getInstance().getUsername()));
+            JSONObject json = generateGetContentJSON(CurrentUserInfo.getUsername());
+            //Client.SendJSONTask task = new Client.SendJSONTask(context);
+            //task.execute(json);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,6 +42,10 @@ public class HeartbeatTask extends TimerTask {
     public boolean isNullResponse() throws JSONException {
         List<String> responseList = parseGetJSON(response);
         return responseList.size() == 0;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }
 

@@ -14,18 +14,20 @@ import java.util.Objects;
  * 文件通用类，包括文件编解码等
  */
 public class FileUtil {
-    private static Context context;
 
 
-    public static String base64ToFile(String base64, String fileType){
+    public static String base64ToFile(Context context,String base64, String fileType){
         String filePath = "";
         try{
             byte[] bytes = new byte[0];
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 bytes = Base64.getDecoder().decode(base64);
+            }else{
+                bytes = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
             }
             String fileName = generateFileName(fileType);
             filePath = context.getFilesDir().getAbsolutePath() + "/" + fileName;
+            System.out.println("file://"+context.getFilesDir().getAbsolutePath());
             File file = new File(filePath);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(bytes);
@@ -36,7 +38,7 @@ public class FileUtil {
         return filePath;
     }
 
-    public static String fileToBase64(Uri fileUri) {
+    public static String fileToBase64(Context context,Uri fileUri) {
         String base64 = "";
         try {
             byte[] bytes = new byte[0];
