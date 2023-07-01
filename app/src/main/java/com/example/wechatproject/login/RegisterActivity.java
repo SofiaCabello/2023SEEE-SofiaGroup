@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity {//注册界面
                     }
                 });
 
-                sendJSONTask.execute(generateRegisterJSON(username, password, 0, "null", "null"));
+                sendJSONTask.execute(generateRegisterJSON(username, password, "null", "null"));
             }
         });
         }

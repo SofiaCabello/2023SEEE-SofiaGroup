@@ -7,8 +7,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.wechatproject.R;
+import com.example.wechatproject.util.DBHelper;
+import com.example.wechatproject.util.MessageAdapter;
+
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,9 +65,40 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 刷新列表
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ListView messageListView = getView().findViewById(R.id.listViewMessages);
+                            DBHelper dbHelper = new DBHelper(getContext());
+                            List<MessageItem> messageItemList = dbHelper.getLatestMessage();
+                            MessageAdapter messageAdapter = new MessageAdapter(getContext(), R.layout.message_list_item, messageItemList);
+                            messageListView.setAdapter(messageAdapter);
+                        }
+                    });
+                }
+            }
+        }, 0, 1000);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.weixin_fragment, container, false);
+        View messageView = inflater.inflate(R.layout.fragment_message_list, container, false);
+        ListView messageListView = messageView.findViewById(R.id.listViewMessages);
+        DBHelper dbHelper = new DBHelper(getContext());
+        List<MessageItem> messageItemList = dbHelper.getLatestMessage();
+        MessageAdapter messageAdapter = new MessageAdapter(getContext(), R.layout.message_list_item, messageItemList);
+        messageListView.setAdapter(messageAdapter);
+        return messageView;
     }
 }

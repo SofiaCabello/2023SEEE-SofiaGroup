@@ -1,27 +1,37 @@
 package com.example.wechatproject.message;
 
-import com.example.wechatproject.R;
-
 public class MessageItem {
+    private String avatarFilePath;
     private String name;
-    private String message;
+    private String latestMessage;
+    private String time;
+    private String type;
 
-    public MessageItem(String name, String message) {
+    public MessageItem(String avatarFilePath, String name, String latestMessage, String time, String type) {
+        this.avatarFilePath = avatarFilePath;
         this.name = name;
-        this.message = message;
+        this.latestMessage = latestMessage;
+        this.time = time;
+        this.type = type;
+    }
+
+    public String getAvatarFilePath() {
+        return avatarFilePath;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getMessage() {
-        return message;
+    public String getLatestMessage() {
+        return latestMessage;
     }
 
+    public String getTime() {
+        return time;
+    }
 
-    //这个方法是一定要改的，但是需要数据库支持
-    public int getAvatarResId() {
-        return R.mipmap.ic_launcher;
+    public String getType() {
+        return type;
     }
 }

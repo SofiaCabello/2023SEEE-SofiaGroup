@@ -31,6 +31,9 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        Intent intent = getIntent();
+        String friendName = intent.getStringExtra("name");
+        String avatarFilePath = intent.getStringExtra("avatarFilePath");
 
         // 初始化视图
         tvFriendName = findViewById(R.id.tvFriendName);
@@ -41,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.btnSend);
 
         // 设置用户名字和图片点击事件，即右边的三点图片，表示打开用户的信息界面
-        tvFriendName.setText("用户名字");
+        tvFriendName.setText(friendName);
         ivOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
