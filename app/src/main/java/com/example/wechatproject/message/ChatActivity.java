@@ -13,19 +13,47 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
 import com.example.wechatproject.contact.Friends_CardActivity;
+import com.example.wechatproject.util.DBHelper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatActivity extends AppCompatActivity {
 
     private TextView tvFriendName;
     private ImageView ivOptions;
-    private ListView messageListView;
+    private ListView chatListView;
     private EditText editTextMessage;
     private Button btnFile;
     private Button btnSend;
 
+    private ChatAdapter chatAdapter;
+    private List<ChatItem> chatItemList;
+
+    @Override
+    protected void onResume() {
+        String friendName = getIntent().getStringExtra("name");
+        super.onResume();
+        // 刷新消息列表
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 刷新消息列表
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 刷新消息列表数据源
+                        DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                        chatItemList = dbHelper.getDesignatedMessage(friendName);
+                        // 通知适配器数据已更新
+                        chatAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +66,7 @@ public class ChatActivity extends AppCompatActivity {
         // 初始化视图
         tvFriendName = findViewById(R.id.tvFriendName);
         ivOptions = findViewById(R.id.ivOptions);
-        messageListView = findViewById(R.id.messageListView);
+        chatListView = findViewById(R.id.messageListView);
         editTextMessage = findViewById(R.id.editTextMessage);
         btnFile = findViewById(R.id.btnFile);
         btnSend = findViewById(R.id.btnSend);
@@ -54,7 +82,14 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        // 初始化消息列表数据源
+        chatItemList = new DBHelper(getApplicationContext()).getDesignatedMessage(friendName);
 
+        // 初始化适配器
+        chatAdapter = new ChatAdapter(this, chatItemList);
+
+        // 设置适配器给ListView
+        chatListView.setAdapter(chatAdapter);
 
         // 设置发送按钮点击事件
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -74,10 +109,12 @@ public class ChatActivity extends AppCompatActivity {
     private void sendMessage(String messageText) {
         // 创建消息对象，添加到消息列表中
 
-        // 刷新消息列表
+        // 刷新消息列表数据源
+        //chatItemList.add(newChatItem);
+        // 通知适配器数据已更新
+        chatAdapter.notifyDataSetChanged();
 
         // 滚动到最后一条消息
-
+        chatListView.smoothScrollToPosition(chatAdapter.getCount() - 1);
     }
 }
-

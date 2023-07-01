@@ -1,21 +1,18 @@
 package com.example.wechatproject.message;
 
-import com.example.wechatproject.R;
-
 public class ChatItem {
-    private String name;
     private String message;
     private boolean isMeSend;
     private String avatarFilePath;
+    private String type;
+    private String time;
 
-    public ChatItem(String name, String message, boolean isMeSend, String avatarFilePath) {
-        this.name = name;
+    public ChatItem(String message, boolean isMeSend, String avatarFilePath, String type,String time) {
         this.message = message;
         this.isMeSend = isMeSend;
-    }
-
-    public String getName() {
-        return name;
+        this.avatarFilePath = avatarFilePath;
+        this.type = type;
+        this.time = time;
     }
 
     public String getMessage() {
@@ -28,6 +25,14 @@ public class ChatItem {
 
     public String getAvatarFilePath() {
         return avatarFilePath;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTime() {
+        return time;
     }
 
 }

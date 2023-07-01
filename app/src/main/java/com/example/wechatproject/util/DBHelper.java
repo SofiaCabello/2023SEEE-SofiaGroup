@@ -6,11 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.wechatproject.contact.ContactItem;
+import com.example.wechatproject.message.ChatItem;
 import com.example.wechatproject.message.MessageItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /*
  * 数据库帮助类，利用Sqlite数据库
@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "wechat.db", null, 3);
+        super(context, "wechat.db", null, 5);
     }
 
     private static final String CREATE_CONTACTS_TABLE
@@ -82,12 +82,64 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null)
             cursor.close();
-        System.out.println(contactResult.get(0).getUserName());
+        //System.out.println(contactResult.get(0).getUserName());
 
         return contactResult;
     }
 
+    // 查询某个联系人的聊天记录
+    public List<ChatItem> getDesignatedMessage(String username){
+        System.out.println("----getDesignatedMessage----");
+        List<ChatItem> chatResult = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String currentUsername = CurrentUserInfo.getUsername();
+        Cursor cursor = db.rawQuery("SELECT content, time, type FROM message WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+        if (cursor != null && cursor.moveToFirst()) {
+            int contentIndex = cursor.getColumnIndex("content");
+            int timeIndex = cursor.getColumnIndex("time");
+            int typeIndex = cursor.getColumnIndex("type");
+            int nameIndex = cursor.getColumnIndex("username");
+            if (contentIndex != -1 && timeIndex != -1 && typeIndex != -1 && nameIndex != -1) {
+                do {
+                    // 从游标中读取每个字段的值
+                    String content = cursor.getString(contentIndex);
+                    String time = cursor.getString(timeIndex);
+                    String type = cursor.getString(typeIndex);
+                    String name = cursor.getString(nameIndex);
+                    boolean isMeSend = name.equals(currentUsername);
 
+                    if(isMeSend){
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                String photoId = cursor1.getString(photoIdIndex);
+                                // 创建聊天记录条目并添加到结果列表中
+                                ChatItem entry = new ChatItem(content, isMeSend, photoId, type,time);
+                                chatResult.add(entry);
+                            }
+                        }
+                    }else{
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                String photoId = cursor1.getString(photoIdIndex);
+                                // 创建聊天记录条目并添加到结果列表中
+                                ChatItem entry = new ChatItem(content, isMeSend, photoId, type,time);
+                                chatResult.add(entry);
+                            }
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+
+        if (cursor != null)
+            cursor.close();
+
+        return chatResult;
+    }
 
     // 查询每个联系人的最近一条聊天记录，可以根据time排序
     public List<MessageItem> getLatestMessage(){
