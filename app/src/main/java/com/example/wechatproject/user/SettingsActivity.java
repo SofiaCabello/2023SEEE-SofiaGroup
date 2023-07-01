@@ -1,7 +1,5 @@
 package com.example.wechatproject.user;
 
-import static com.example.wechatproject.network.JSONHandler.generateUpdateJSON;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,14 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.wechatproject.R;
-import com.example.wechatproject.network.Client;
-import com.example.wechatproject.network.FileUtil;
-import com.example.wechatproject.util.CurrentUserInfo;
+import com.example.wechatproject.login.LoginActivity;
+import com.example.wechatproject.login.RegisterActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 //这里需要添加每个按钮的响应
     private Button buttonChangeAvatar;
-    private Button buttonChangeUsername;
+    private Button buttonChangeIP;
     private Button buttonChangeSignature;
 
     @Override
@@ -25,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         buttonChangeAvatar = findViewById(R.id.buttonChangeAvatar);
-        buttonChangeUsername = findViewById(R.id.buttonChangeUsername);
+        buttonChangeIP = findViewById(R.id.buttonChangeIP);
         buttonChangeSignature = findViewById(R.id.buttonChangeSignature);
 
         buttonChangeAvatar.setOnClickListener(new View.OnClickListener() {
@@ -40,10 +37,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        buttonChangeUsername.setOnClickListener(new View.OnClickListener() {
+        buttonChangeIP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 处理修改用户名的逻辑
+                // 处理修改IP的逻辑
+                Intent intent = new Intent(SettingsActivity.this, IPActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -51,6 +51,9 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 处理修改签名的逻辑
+                Intent intent = new Intent(SettingsActivity.this, SignatureActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

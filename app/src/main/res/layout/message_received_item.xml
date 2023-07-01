@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/ivAvatarReceived"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/avatar_placeholder" />
+
+    <TextView
+        android:id="@+id/tvMessageReceived"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/bg_message_received"
+        android:padding="8dp"
+        android:text="对方发送的消息"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

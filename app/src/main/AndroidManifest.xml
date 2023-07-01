@@ -49,6 +49,16 @@
         <activity android:name=".contact.Friends_CardActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".message.ChatActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".user.IPActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".user.SignatureActivity"
+            android:exported="true">
+
+        </activity>
     </application>
 
 </manifest>
