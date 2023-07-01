@@ -2,17 +2,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 图片 -->
-    <ImageView
-        android:id="@+id/imageView"
+    <!--微信顶部栏-->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"
-        android:src="@drawable/em_new_friends_icon"
-        android:contentDescription="@string/logo_description" />
+        android:layout_height="45dp"
+        android:background="#FFFEEE">
 
-    <!-- 搜索框 -->
+        <!-- 微信标题 -->
+        <TextView
+            android:id="@+id/weixintext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="微信"
+
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_centerInParent="true" />
+
+
+    </RelativeLayout>
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,7 +65,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="266dp"
+        android:layout_marginTop="320dp"
         android:layout_marginEnd="7dp"
         android:orientation="vertical"
         android:visibility="gone">
@@ -62,8 +73,8 @@
         <!-- 用户头像 -->
         <ImageView
             android:id="@+id/imageViewProfile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
             android:src="@drawable/avatar_placeholder"
             android:layout_gravity="center_horizontal" />
 
