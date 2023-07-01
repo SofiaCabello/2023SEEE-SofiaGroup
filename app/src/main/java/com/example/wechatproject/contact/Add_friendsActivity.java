@@ -1,6 +1,7 @@
-package com.example.wechatproject.message;
+package com.example.wechatproject.contact;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -41,7 +42,8 @@ public class Add_friendsActivity extends AppCompatActivity {
         layoutUserInfo = findViewById(R.id.layoutUserInfo);
         imageViewProfile = findViewById(R.id.imageViewProfile);
         textViewUsername = findViewById(R.id.textViewUsername);
-
+        final String[] avatarPath = {null};
+        final String[] signature = {null};
         // 设置搜索按钮点击事件
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +70,7 @@ public class Add_friendsActivity extends AppCompatActivity {
                                         JSONObject jsonObject = null;
                                         try {
                                             jsonObject = new JSONObject(response);
+                                            System.out.println("RESPONSE: " + response);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -75,8 +78,10 @@ public class Add_friendsActivity extends AppCompatActivity {
                                         if (jsonObject != null) {
                                             String friendName = jsonObject.optString("friendName");
                                             String friendPhotoId = jsonObject.optString("friendPhotoId");
-                                            String filePath = FileUtil.base64ToFile(getApplicationContext(),friendPhotoId, "1");
-                                            System.out.println("filePath: " + filePath);
+                                            String friendSignature = jsonObject.optString("friendSignature");
+                                                String filePath = FileUtil.base64ToFile(getApplicationContext(),friendPhotoId, "1");
+                                                avatarPath[0] = filePath;
+                                                signature[0] = friendSignature;
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -105,12 +110,14 @@ public class Add_friendsActivity extends AppCompatActivity {
         imageViewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Intent intent = new Intent(Add_friendsActivity.this, FriendInfoActivity.class);
+               Intent intent = new Intent(Add_friendsActivity.this, AddFriends_CardActivity.class);
+               intent.putExtra("username", textViewUsername.getText().toString().trim());
+               intent.putExtra("avatarPath", avatarPath[0]);
+               intent.putExtra("signature",signature[0]);
+               startActivity(intent);
             }
         });
     }
-
-
 
     // 显示或隐藏用户不存在的消息提示
     private void showUserNotExistMessage(boolean show) {

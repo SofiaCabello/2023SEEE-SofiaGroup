@@ -15,8 +15,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.wechatproject.contact.ContactFragment;
-import com.example.wechatproject.message.Add_friendsActivity;
+import com.example.wechatproject.contact.Add_friendsActivity;
 import com.example.wechatproject.message.MessageFragment;
+import com.example.wechatproject.network.HeartbeatTask;
 import com.example.wechatproject.user.UserFragment;
 import com.example.wechatproject.util.DBHelper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,38 +46,14 @@ public class MainActivity extends AppCompatActivity {
         weixintext=findViewById(R.id.weixintext);
         System.out.println("Hello World"); // 测试语句
 
-        DBHelper dbHelper = new DBHelper(this);
+        //启动心跳包
+        HeartbeatTask heartbeatTask = new HeartbeatTask(getApplicationContext());
+        Timer timer = new Timer();
+        timer.schedule(heartbeatTask, 0, 100000);
 
-//        // 在后台启动心跳包发送任务
-//        timer = new Timer();
-//        HeartbeatTask heartbeatTask = new HeartbeatTask();
-//        timer.schedule(heartbeatTask, 0, 10000);
-//        try {
-//            // 如果响应不为空，那么将响应内容转数据库执行
-//            if (!heartbeatTask.isNullResponse()) {
-//                String response = heartbeatTask.getResponse();
-//                Log.d("HeartbeatTask", "onCreate: " + response);
-//                // 响应内容由JSON字符串转换为ArrayList，其内容依次是sendId, TS, type, content
-//                List<String> responseList = JSONHandler.parseGetJSON(response);
-//                String sendId = responseList.get(0);
-//                String TS = responseList.get(1);
-//                String type = responseList.get(2);
-//                String content = responseList.get(3);
-//                /* 对于不同类型的响应，执行不同的操作
-//                 * 1. 如果是文本，直接存入数据库
-//                 * 2. 如果是二进制文件，将文件经解析后存入本地，再将文件路径存入数据库
-//                 */
-//                if (type.equals("0")) {
-//                    dbHelper.addMessage(sendId,content,TS);
-//                }else{
-//                    String filePath = FileUtil.base64ToFile(content, type);
-//                    dbHelper.addMessage(sendId, filePath, TS);
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
+        //测试数据库
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
+        dbHelper.showAll();
 
         //绑定控件
         fragmentContainer = findViewById(R.id.fragmentContainer);

@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.wechatproject.R;
+import com.example.wechatproject.util.CurrentUserInfo;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +75,12 @@ public class UserFragment extends Fragment {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
             }
         });
+
+        ImageView imageViewAvatar = view.findViewById(R.id.imageViewAvatar);
+        TextView textViewUsername = view.findViewById(R.id.textViewUsername);
+        TextView textViewSignature = view.findViewById(R.id.textViewSignature);
+
+        textViewUsername.setText(CurrentUserInfo.getUsername());
         return view;
     }
 }
