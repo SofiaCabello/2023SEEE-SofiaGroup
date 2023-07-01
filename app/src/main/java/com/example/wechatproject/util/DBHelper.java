@@ -82,7 +82,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (cursor != null)
             cursor.close();
-        System.out.println(contactResult.get(0).getUserName());
+       // System.out.println(contactResult.get(0).getUserName());
 
         return contactResult;
     }
