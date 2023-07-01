@@ -9,6 +9,7 @@ import com.example.wechatproject.R;
 public class AddFriends_CardActivity extends AppCompatActivity {
     //此处有一个加好友按钮，需进行点击处理，之后跳转到加好友验证界面
     private Button Addfriends;
+    //Dai
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
