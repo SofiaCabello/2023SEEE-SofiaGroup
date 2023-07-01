@@ -35,7 +35,6 @@
 
         <activity
             android:name=".MainActivity"
-
             android:exported="true">
         </activity>
         <activity android:name=".user.SettingsActivity"

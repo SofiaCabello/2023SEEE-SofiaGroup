@@ -67,7 +67,7 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_user,container,false);
-        ImageView buttonSettings = view.findViewById(R.id.imageView);
+        Button buttonSettings = view.findViewById(R.id.buttonSettings);
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
