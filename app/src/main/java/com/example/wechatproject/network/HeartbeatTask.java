@@ -71,19 +71,19 @@ public class HeartbeatTask extends TimerTask {
                                 });
                                 jsonTask.execute(generateAddFriendJSON(CurrentUserInfo.getUsername(),sourceUsername));
                             }else if (type.equals("0")) {
-                                new DBHelper(context).addMessage(sourceUsername, content, TS, 0);
+                                new DBHelper(context).addMessage(sourceUsername, content, TS, "0","false");
                             }else if (type.equals("1")) {
                                 String filePath = FileUtil.base64ToFile(context,content,"1");
-                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, 1);
+                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, "1","false");
                             }else if (type.equals("2")) {
                                 String filePath = FileUtil.base64ToFile(context,content,"2");
-                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, 2);
+                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, "2","false");
                             }else if (type.equals("3")) {
                                 String filePath = FileUtil.base64ToFile(context,content,"3");
-                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, 3);
+                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, "3","false");
                             }else if (type.equals("4")) {
                                 String filePath = FileUtil.base64ToFile(context,content,"4");
-                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, 4);
+                                new DBHelper(context).addMessage(sourceUsername, filePath, TS, "4","false");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

@@ -32,6 +32,7 @@ public class MessageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Timer timer;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -67,7 +68,31 @@ public class MessageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Timer timer = new Timer();
+        startTimer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopTimer();
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View messageView = inflater.inflate(R.layout.fragment_message_list, container, false);
+        ListView messageListView = messageView.findViewById(R.id.listViewMessages);
+        DBHelper dbHelper = new DBHelper(getContext());
+        List<MessageItem> messageItemList = dbHelper.getLatestMessage();
+        MessageAdapter messageAdapter = new MessageAdapter(getContext(), R.layout.message_list_item, messageItemList);
+        messageListView.setAdapter(messageAdapter);
+        return messageView;
+    }
+
+    private void startTimer() {
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -88,17 +113,11 @@ public class MessageFragment extends Fragment {
         }, 0, 1000);
     }
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View messageView = inflater.inflate(R.layout.fragment_message_list, container, false);
-        ListView messageListView = messageView.findViewById(R.id.listViewMessages);
-        DBHelper dbHelper = new DBHelper(getContext());
-        List<MessageItem> messageItemList = dbHelper.getLatestMessage();
-        MessageAdapter messageAdapter = new MessageAdapter(getContext(), R.layout.message_list_item, messageItemList);
-        messageListView.setAdapter(messageAdapter);
-        return messageView;
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
+
 }

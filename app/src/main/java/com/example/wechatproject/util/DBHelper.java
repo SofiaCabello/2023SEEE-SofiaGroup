@@ -18,13 +18,13 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "wechat.db", null, 5);
+        super(context, "wechat.db", null, 7);
     }
 
     private static final String CREATE_CONTACTS_TABLE
             = "CREATE TABLE IF NOT EXISTS contacts (currentUsername TEXT, username TEXT , photoId TEXT, signature TEXT)";
     private static final String CREATE_CHAT_TABLE
-            = "CREATE TABLE IF NOT EXISTS message (currentUsername TEXT, username TEXT , content TEXT, time TEXT, type TEXT)";
+            = "CREATE TABLE IF NOT EXISTS message (currentUsername TEXT, username TEXT , content TEXT, time TEXT, type TEXT, isMe TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -39,19 +39,31 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean contactExist(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String currentUsername = CurrentUserInfo.getUsername();
+        Cursor cursor = db.rawQuery("SELECT * FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
 
     // 添加联系人
     public void addContact(String username, String photoId, String signature) {
         SQLiteDatabase db = this.getWritableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        db.execSQL("INSERT INTO contacts (currentUsername, username, photoId, signature) VALUES(?, ?, ?, ?)", new Object[]{currentUsername, username, photoId, signature});
+        if(!contactExist(username)) {
+            db.execSQL("INSERT INTO contacts (currentUsername, username, photoId, signature) VALUES(?, ?, ?, ?)", new Object[]{currentUsername, username, photoId, signature});
+        }
     }
 
     // 添加聊天记录
-    public void addMessage(String username, String content, String time, int type) {
+    public void addMessage(String username, String content, String time, String type, String isMe) {
         SQLiteDatabase db = this.getWritableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        db.execSQL("INSERT INTO message (currentUsername, username, content, time, type) VALUES(?, ?, ?, ?, ?)", new Object[]{currentUsername, username, content, time, type});
+        db.execSQL("INSERT INTO message (currentUsername, username, content, time, type, isMe) VALUES(?, ?, ?, ?, ?, ?)", new Object[]{currentUsername, username, content, time, type, isMe});
     }
 
     // 查询所有联系人
@@ -93,20 +105,20 @@ public class DBHelper extends SQLiteOpenHelper {
         List<ChatItem> chatResult = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        Cursor cursor = db.rawQuery("SELECT content, time, type FROM message WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+        Cursor cursor = db.rawQuery("SELECT content, time, type, isMe FROM message WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
         if (cursor != null && cursor.moveToFirst()) {
             int contentIndex = cursor.getColumnIndex("content");
             int timeIndex = cursor.getColumnIndex("time");
             int typeIndex = cursor.getColumnIndex("type");
-            int nameIndex = cursor.getColumnIndex("username");
-            if (contentIndex != -1 && timeIndex != -1 && typeIndex != -1 && nameIndex != -1) {
+            int isMeIndex = cursor.getColumnIndex("isMe");
+            if (contentIndex != -1 && timeIndex != -1 && typeIndex != -1  && isMeIndex != -1)  {
                 do {
                     // 从游标中读取每个字段的值
                     String content = cursor.getString(contentIndex);
                     String time = cursor.getString(timeIndex);
                     String type = cursor.getString(typeIndex);
-                    String name = cursor.getString(nameIndex);
-                    boolean isMeSend = name.equals(currentUsername);
+                    boolean isMeSend = cursor.getString(isMeIndex).equals("true");
+                    System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
 
                     if(isMeSend){
                         Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
@@ -147,13 +159,14 @@ public class DBHelper extends SQLiteOpenHelper {
         List<MessageItem> messageResult = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        Cursor cursor = db.rawQuery("SELECT username, content, time, type FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
+        Cursor cursor = db.rawQuery("SELECT username, content, time, type, isMe FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
         if (cursor != null && cursor.moveToFirst()) {
             int usernameIndex = cursor.getColumnIndex("username");
             int contentIndex = cursor.getColumnIndex("content");
             int timeIndex = cursor.getColumnIndex("time");
             int typeIndex = cursor.getColumnIndex("type");
-            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1) {
+            int isMeIndex = cursor.getColumnIndex("isMe");
+            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1 && isMeIndex != -1) {
                 do {
                     // 从游标中读取每个字段的值
                     String username = cursor.getString(usernameIndex);

@@ -15,6 +15,7 @@ import com.example.wechatproject.message.ChatActivity;
 import com.example.wechatproject.message.MessageItem;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -25,12 +26,23 @@ public class MessageAdapter extends ArrayAdapter<MessageItem> {
 
     public MessageAdapter(Context context, int resource, List<MessageItem> objects) {
         super(context, resource, objects);
-        messageItemList = objects;
         inflater = LayoutInflater.from(context);
+        messageItemList = new ArrayList<>(objects);
+        filterMessageList();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public int getCount() {
+        return messageItemList.size();
+    }
+
+    @Override
+    public MessageItem getItem(int position) {
+        return messageItemList.get(position);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -46,33 +58,36 @@ public class MessageAdapter extends ArrayAdapter<MessageItem> {
         }
 
         // 获取当前位置的消息项
-        MessageItem messageItem = messageItemList.get(position);
+        MessageItem messageItem = getItem(position);
 
-        // 在视图中显示消息数据
-        viewHolder.avatarImageView.setImageURI(Uri.parse(messageItem.getAvatarFilePath()));
-        viewHolder.nameTextView.setText(messageItem.getName());
-        if(Objects.equals(messageItem.getType(), "0")) {
-            viewHolder.messageTextView.setText(messageItem.getLatestMessage());
-        } else {
-            viewHolder.messageTextView.setText("[非文本消息]");
-        }
-        String time = messageItem.getTime();
-        //将时间戳转换为时间
-        String date = TimeStamp2Date(time, "yyyy-MM-dd HH:mm:ss");
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ChatActivity.class);
-                intent.putExtra("name", messageItem.getName());
-                intent.putExtra("avatarFilePath", messageItem.getAvatarFilePath());
-                getContext().startActivity(intent);
+        if (messageItem != null) {
+            // 在视图中显示消息数据
+            viewHolder.avatarImageView.setImageURI(Uri.parse(messageItem.getAvatarFilePath()));
+            viewHolder.nameTextView.setText(messageItem.getName());
+            if (Objects.equals(messageItem.getType(), "0")) {
+                viewHolder.messageTextView.setText(messageItem.getLatestMessage());
+            } else {
+                viewHolder.messageTextView.setText("[非文本消息]");
             }
-        });
+            String time = messageItem.getTime();
+            // 将时间戳转换为时间
+            String date = TimeStamp2Date(time, "yyyy-MM-dd HH:mm:ss");
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                    intent.putExtra("name", messageItem.getName());
+                    intent.putExtra("avatarFilePath", messageItem.getAvatarFilePath());
+                    getContext().startActivity(intent);
+                }
+            });
+        }
+
         return convertView;
     }
 
-    //将时间戳转换为时间
+    // 将时间戳转换为时间
     private String TimeStamp2Date(String time, String s) {
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(s);
@@ -88,4 +103,16 @@ public class MessageAdapter extends ArrayAdapter<MessageItem> {
         TextView messageTextView;
         TextView timeTextView;
     }
+
+    private void filterMessageList() {
+        List<MessageItem> filteredList = new ArrayList<>();
+        for (MessageItem messageItem : messageItemList) {
+            if (!messageItem.getName().equals(CurrentUserInfo.getUsername())) {
+                filteredList.add(messageItem);
+            }
+        }
+        messageItemList = filteredList;
+    }
+
 }
+

@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
 import com.example.wechatproject.contact.Friends_CardActivity;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.JSONHandler;
+import com.example.wechatproject.util.CurrentUserInfo;
 import com.example.wechatproject.util.DBHelper;
 
 import java.util.List;
@@ -27,32 +30,16 @@ public class ChatActivity extends AppCompatActivity {
     private EditText editTextMessage;
     private Button btnFile;
     private Button btnSend;
-
+    private String friendName;
     private ChatAdapter chatAdapter;
     private List<ChatItem> chatItemList;
+    private Timer timer;
+
 
     @Override
-    protected void onResume() {
-        String friendName = getIntent().getStringExtra("name");
-        super.onResume();
-        // 刷新消息列表
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // 刷新消息列表
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 刷新消息列表数据源
-                        DBHelper dbHelper = new DBHelper(ChatActivity.this);
-                        chatItemList = dbHelper.getDesignatedMessage(friendName);
-                        // 通知适配器数据已更新
-                        chatAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        }, 0, 1000);
+    protected void onPause() {
+        super.onPause();
+        stopTimer();
     }
 
     @Override
@@ -60,7 +47,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Intent intent = getIntent();
-        String friendName = intent.getStringExtra("name");
+        this.friendName = intent.getStringExtra("name");
         String avatarFilePath = intent.getStringExtra("avatarFilePath");
 
         // 初始化视图
@@ -97,24 +84,60 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String messageText = editTextMessage.getText().toString().trim();
                 if (!messageText.isEmpty()) {
+                    String timeStamp = String.valueOf(System.currentTimeMillis());
                     // 发送消息
-                    sendMessage(messageText);
+                    Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+                        @Override
+                        public void onTaskCompleted(String response) {
+                            // 刷新消息列表
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 刷新消息列表数据源
+                                    DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                                    dbHelper.addMessage(friendName,messageText,timeStamp,"0","true");
+                                    chatItemList = dbHelper.getDesignatedMessage(friendName);
+                                    // 通知适配器数据已更新
+                                    chatAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    });
+                    sendJSONTask.execute(JSONHandler.generatePostMessageJSON(CurrentUserInfo.getUsername(), friendName, messageText));
                     // 清空输入框
                     editTextMessage.setText("");
                 }
             }
         });
+
+        startTimer();
     }
 
-    private void sendMessage(String messageText) {
-        // 创建消息对象，添加到消息列表中
-
-        // 刷新消息列表数据源
-        //chatItemList.add(newChatItem);
-        // 通知适配器数据已更新
-        chatAdapter.notifyDataSetChanged();
-
-        // 滚动到最后一条消息
-        chatListView.smoothScrollToPosition(chatAdapter.getCount() - 1);
+    private void startTimer(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 刷新消息列表
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 刷新消息列表数据源
+                        DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                        chatItemList = dbHelper.getDesignatedMessage(friendName);
+                        // 通知适配器数据已更新
+                        chatAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 0, 1000);
     }
+
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
 }
