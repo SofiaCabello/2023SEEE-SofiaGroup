@@ -12,6 +12,7 @@ public class CurrentUserInfo {
     private static String username;
     private static String avatarFilePath;
     private static String signature;
+    private static String IPAddress;
 
     private CurrentUserInfo() {}
 
@@ -44,5 +45,13 @@ public class CurrentUserInfo {
 
     public void setUsername(String username){
         CurrentUserInfo.username = username;
+    }
+
+    public static String getIPAddress() {
+        return IPAddress;
+    }
+
+    public void setIPAddress(String IPAddress) {
+        CurrentUserInfo.IPAddress = IPAddress;
     }
 }

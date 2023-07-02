@@ -1,16 +1,29 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/navUser">
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:id="@+id/navUser"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <!--IP地址-->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="IP: 河南郑州"
+        android:layout_marginRight="20dp"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
 
     <!--头像-->
     <ImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/avatar_placeholder" />
 
     <!--用户名-->
@@ -18,8 +31,6 @@
         android:id="@+id/textViewUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/imageViewAvatar"
         android:layout_marginTop="24dp"
         android:text="Username"
         android:textSize="24sp"
@@ -31,8 +42,6 @@
         android:id="@+id/textViewWeChatId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/textViewUsername"
         android:layout_marginTop="8dp"
         android:text="3184018779"
         android:textSize="18sp"
@@ -43,8 +52,6 @@
         android:id="@+id/textViewSignature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/textViewWeChatId"
         android:layout_marginTop="16dp"
         android:text="发表个签，展示你的独特态度"
         android:textSize="16sp"
@@ -52,27 +59,11 @@
 
 
 
-    <!--IP地址-->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:text="IP: 河南郑州"
-        android:textSize="16sp"
-        android:textColor="@color/black" />
-
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="320dp"
-        android:layout_height="211dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="86dp"
+        android:layout_width="224dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
         app:srcCompat="@drawable/jiantou" />
 
-</RelativeLayout>
+</LinearLayout>

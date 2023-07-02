@@ -92,6 +92,7 @@ public class UserFragment extends Fragment {
         ImageView imageViewAvatar = view.findViewById(R.id.imageViewAvatar);
         TextView textViewUsername = view.findViewById(R.id.textViewUsername);
         TextView textViewSignature = view.findViewById(R.id.textViewSignature);
+        TextView textview = view.findViewById(R.id.textView);
 
         Client.SendJSONTask task = new Client.SendJSONTask(getContext(), new Client.OnTaskCompleted() {
             @Override
@@ -124,6 +125,7 @@ public class UserFragment extends Fragment {
             imageViewAvatar.setImageURI(Uri.parse(CurrentUserInfo.getAvatarFilePath()));
         }
         textViewUsername.setText(CurrentUserInfo.getUsername());
+        textview.setText(CurrentUserInfo.getIPAddress());
         return view;
     }
 }
