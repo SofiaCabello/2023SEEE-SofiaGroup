@@ -1,6 +1,7 @@
 package com.example.wechatproject.message;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,9 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import com.example.wechatproject.R;
 import com.example.wechatproject.message.ChatItem;
 
+import java.io.File;
 import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
@@ -23,10 +27,12 @@ public class ChatAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private static final int TYPE_SENT = 0;
     private static final int TYPE_RECEIVED = 1;
+    private Context context;
 
     public ChatAdapter(Context context, List<ChatItem> objects) {
         chatItemList = objects;
         inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -97,18 +103,26 @@ public class ChatAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //通过Intent传递文件路径，打开文件
+                    // 通过Intent传递文件路径，打开文件
                     String filePath = messageItem.getMessage();
+                    Uri fileUri = Uri.parse(filePath);
+
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse("file://" + filePath), "*/*");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setDataAndType(fileUri, getMimeType(fileUri));
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+
                     try {
                         v.getContext().startActivity(intent);
                     } catch (ActivityNotFoundException e) {
                         Toast.makeText(v.getContext(), "未找到打开此类文件的程序", Toast.LENGTH_SHORT).show();
+                    } catch (IllegalArgumentException e) {
+                        Toast.makeText(v.getContext(), "无法访问文件", Toast.LENGTH_SHORT).show();
                     }
+
+
                 }
             });
+
         }
         return convertView;
     }
@@ -117,4 +131,10 @@ public class ChatAdapter extends BaseAdapter {
         ImageView avatarImageView;
         TextView messageTextView;
     }
+
+    private String getMimeType(Uri uri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        return contentResolver.getType(uri);
+    }
+
 }

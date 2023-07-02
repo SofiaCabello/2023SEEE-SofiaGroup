@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.wechatproject.R;
 import com.example.wechatproject.contact.Friends_CardActivity;
 import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.FileUtil;
 import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.util.CurrentUserInfo;
 import com.example.wechatproject.util.DBHelper;
@@ -160,7 +161,42 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK && requestCode == 1){
             Uri uri = data.getData();
-
+            String fileType = getContentResolver().getType(uri);
+            String fileName = uri.getLastPathSegment();
+            String fileNameWithoutExtension = fileName;
+            int index = fileName.lastIndexOf(".");
+            if(index != -1){
+                fileNameWithoutExtension = fileName.substring(0, index);
+            }
+            String type = "6";
+            if(fileName.contains(".img")){
+                type = "1";
+            }else if(fileName.contains(".mp3")){
+                type = "2";
+            }else if(fileName.contains(".mp4")){
+                type = "3";
+            }else if(fileName.contains(".txt")){
+                type = "4";
+            }
+            DBHelper dbHelper = new DBHelper(getApplicationContext());
+            String finalType = type;
+            Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(String response) {
+                    dbHelper.addMessage(friendName, uri.toString(), String.valueOf(System.currentTimeMillis()), finalType, "true");
+                    // 刷新消息列表
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 刷新消息列表数据源
+                            chatItemList = dbHelper.getDesignatedMessage(friendName);
+                            // 通知适配器数据已更新
+                            chatAdapter.setData(chatItemList);
+                        }
+                    });
+                }
+            });
+            sendJSONTask.execute(JSONHandler.generateBase64JSON(CurrentUserInfo.getUsername(), friendName,FileUtil.fileToBase64(getApplicationContext(),uri) , finalType,fileNameWithoutExtension));
         }
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "wechat.db", null, 12);
+        super(context, "wechat.db", null, 13);
     }
 
     private static final String CREATE_CONTACTS_TABLE
@@ -119,8 +119,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     String time = cursor.getString(timeIndex);
                     String type = cursor.getString(typeIndex);
                     boolean isMeSend = cursor.getString(isMeIndex).equals("true");
-                   // System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
-                    //System.out.println("message"+content);
+                    System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
 
                     if(isMeSend){
                         Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});

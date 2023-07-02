@@ -142,7 +142,7 @@ public class JSONHandler {
     }
 
     //生成base64编码的JSON对象
-    public static JSONObject generateBase64JSON(String sendId, String receiveId, String content, int fileType, String fileName) {
+    public static JSONObject generateBase64JSON(String sendId, String receiveId, String content, String fileType, String fileName) {
         JSONObject json = new JSONObject();
         try {
             json.put("type", "postBase64");
