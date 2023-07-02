@@ -6,11 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.wechatproject.contact.ContactItem;
+import com.example.wechatproject.message.ChatItem;
 import com.example.wechatproject.message.MessageItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /*
  * 数据库帮助类，利用Sqlite数据库
@@ -18,13 +18,13 @@ import java.util.Map;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "wechat.db", null, 3);
+        super(context, "wechat.db", null, 10);
     }
 
     private static final String CREATE_CONTACTS_TABLE
             = "CREATE TABLE IF NOT EXISTS contacts (currentUsername TEXT, username TEXT , photoId TEXT, signature TEXT)";
     private static final String CREATE_CHAT_TABLE
-            = "CREATE TABLE IF NOT EXISTS message (currentUsername TEXT, username TEXT , content TEXT, time TEXT, type TEXT)";
+            = "CREATE TABLE IF NOT EXISTS message (currentUsername TEXT, username TEXT , content TEXT, time TEXT, type TEXT, isMe TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -39,19 +39,31 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean contactExist(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String currentUsername = CurrentUserInfo.getUsername();
+        Cursor cursor = db.rawQuery("SELECT * FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
 
     // 添加联系人
     public void addContact(String username, String photoId, String signature) {
         SQLiteDatabase db = this.getWritableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        db.execSQL("INSERT INTO contacts (currentUsername, username, photoId, signature) VALUES(?, ?, ?, ?)", new Object[]{currentUsername, username, photoId, signature});
+        if(!contactExist(username)) {
+            db.execSQL("INSERT INTO contacts (currentUsername, username, photoId, signature) VALUES(?, ?, ?, ?)", new Object[]{currentUsername, username, photoId, signature});
+        }
     }
 
     // 添加聊天记录
-    public void addMessage(String username, String content, String time, int type) {
+    public void addMessage(String username, String content, String time, String type, String isMe) {
         SQLiteDatabase db = this.getWritableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        db.execSQL("INSERT INTO message (currentUsername, username, content, time, type) VALUES(?, ?, ?, ?, ?)", new Object[]{currentUsername, username, content, time, type});
+        db.execSQL("INSERT INTO message (currentUsername, username, content, time, type, isMe) VALUES(?, ?, ?, ?, ?, ?)", new Object[]{currentUsername, username, content, time, type, isMe});
     }
 
     // 查询所有联系人
@@ -71,7 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     String username = cursor.getString(usernameIndex);
                     String photoId = cursor.getString(photoIdIndex);
                     String signature = cursor.getString(signatureIndex);
-
+                    System.out.println("Contact's photopath is "+ photoId);
                     //System.out.println("username: " + username + " photoId: " + photoId + " signature: " + signature);
                     // 创建联系人条目并添加到结果列表中
                     ContactItem entry = new ContactItem(username, signature, photoId);
@@ -81,13 +93,66 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         if (cursor != null)
+            //
             cursor.close();
-        System.out.println(contactResult.get(0).getUserName());
+        //System.out.println(contactResult.get(0).getUserName());
 
         return contactResult;
     }
 
+    // 查询某个联系人的聊天记录
+    public List<ChatItem> getDesignatedMessage(String username){
+        System.out.println("----getDesignatedMessage----");
+        List<ChatItem> chatResult = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String currentUsername = CurrentUserInfo.getUsername();
+        Cursor cursor = db.rawQuery("SELECT content, time, type, isMe FROM message WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+        if (cursor != null && cursor.moveToFirst()) {
+            int contentIndex = cursor.getColumnIndex("content");
+            int timeIndex = cursor.getColumnIndex("time");
+            int typeIndex = cursor.getColumnIndex("type");
+            int isMeIndex = cursor.getColumnIndex("isMe");
+            if (contentIndex != -1 && timeIndex != -1 && typeIndex != -1  && isMeIndex != -1)  {
+                do {
+                    // 从游标中读取每个字段的值
+                    String content = cursor.getString(contentIndex);
+                    String time = cursor.getString(timeIndex);
+                    String type = cursor.getString(typeIndex);
+                    boolean isMeSend = cursor.getString(isMeIndex).equals("true");
+                   // System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
 
+                    if(isMeSend){
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                String photoId = cursor1.getString(photoIdIndex);
+                                // 创建聊天记录条目并添加到结果列表中
+                                ChatItem entry = new ChatItem(content, isMeSend, photoId, type,time);
+                                chatResult.add(entry);
+                            }
+                        }
+                    }else{
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                String photoId = cursor1.getString(photoIdIndex);
+                                // 创建聊天记录条目并添加到结果列表中
+                                ChatItem entry = new ChatItem(content, isMeSend, photoId, type,time);
+                                chatResult.add(entry);
+                            }
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+        }
+
+        if (cursor != null)
+            cursor.close();
+
+        return chatResult;
+    }
 
     // 查询每个联系人的最近一条聊天记录，可以根据time排序
     public List<MessageItem> getLatestMessage(){
@@ -95,30 +160,34 @@ public class DBHelper extends SQLiteOpenHelper {
         List<MessageItem> messageResult = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String currentUsername = CurrentUserInfo.getUsername();
-        Cursor cursor = db.rawQuery("SELECT username, content, time, type FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
+        Cursor cursor = db.rawQuery("SELECT username, content, time, type, isMe FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
         if (cursor != null && cursor.moveToFirst()) {
             int usernameIndex = cursor.getColumnIndex("username");
             int contentIndex = cursor.getColumnIndex("content");
             int timeIndex = cursor.getColumnIndex("time");
             int typeIndex = cursor.getColumnIndex("type");
-            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1) {
+            int isMeIndex = cursor.getColumnIndex("isMe");
+            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1 && isMeIndex != -1) {
                 do {
                     // 从游标中读取每个字段的值
                     String username = cursor.getString(usernameIndex);
                     String content = cursor.getString(contentIndex);
                     String time = cursor.getString(timeIndex);
                     String type = cursor.getString(typeIndex);
+                    boolean isMeSend = cursor.getString(isMeIndex).equals("true");
 
-                    Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
                     String filePath = "";
-                    if (cursor1 != null && cursor1.moveToFirst()) {
-                        int photoIdIndex = cursor1.getColumnIndex("photoId");
-                        if (photoIdIndex != -1) {
-                            filePath = cursor1.getString(photoIdIndex);
+                    if(isMeSend) {
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                filePath = cursor1.getString(photoIdIndex);
+                            }
                         }
+                    }else{
+                        filePath = CurrentUserInfo.getAvatarFilePath();
                     }
-                    //System.out.println("username: " + username + " content: " + content + " time: " + time + " type: " + type);
-                    // 创建联系人条目并添加到结果列表中
                     MessageItem entry = new MessageItem(filePath, username, content, time, type);
                     messageResult.add(entry);
                 } while (cursor.moveToNext());
@@ -130,48 +199,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return messageResult;
     }
-//        System.out.println("----getLatestMessage----");
-//        List<MessageItem> messageResult = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        String currentUsername = CurrentUserInfo.getUsername();
-//        Cursor cursor = db.rawQuery("SELECT username, content, time, type FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
-//        if (cursor != null && cursor.moveToFirst()) {
-//            int usernameIndex = cursor.getColumnIndex("username");
-//            int contentIndex = cursor.getColumnIndex("content");
-//            int timeIndex = cursor.getColumnIndex("time");
-//            int typeIndex = cursor.getColumnIndex("type");
-//            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1) {
-//                do {
-//                    // 从游标中读取每个字段的值
-//                    String username = cursor.getString(usernameIndex);
-//                    String content = cursor.getString(contentIndex);
-//                    String time = cursor.getString(timeIndex);
-//                    String type = cursor.getString(typeIndex);
-//
-//                    Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
-//                    String filePath = "";
-//                    if (cursor1 != null && cursor1.moveToFirst()) {
-//                        int photoIdIndex = cursor1.getColumnIndex("photoId");
-//                        if (photoIdIndex != -1) {
-//                            filePath = cursor1.getString(photoIdIndex);
-//                        }
-//                    }
-//                    //System.out.println("username: " + username + " content: " + content + " time: " + time + " type: " + type);
-//                    // 创建联系人条目并添加到结果列表中
-//                    MessageItem entry = new MessageItem(filePath, username, content, time, type);
-//                    messageResult.add(entry);
-//                } while (cursor.moveToNext());
-//            }
-//        }
-//
-//        if (cursor != null)
-//            cursor.close();
-//        System.out.println(messageResult.get(0).getName());
-//
-//        return messageResult;
-//    }
-
-
 
 
     // 测试方法，用于展示数据库中的内容

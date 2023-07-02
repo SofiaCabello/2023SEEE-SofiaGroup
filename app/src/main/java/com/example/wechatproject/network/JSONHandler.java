@@ -40,16 +40,38 @@ public class JSONHandler {
         return json;
     }
 
-    //生成更新JSON对象
-    public static JSONObject generateUpdateJSON(String username, String password, String photoId, String siganture, String fileType) {
+    //生成更新头像JSON对象
+    public static JSONObject generateUpdateAvatarJSON(String username, String photoId) {
         JSONObject json = new JSONObject();
         try {
-            json.put("type", "update");
+            json.put("type", "updateAvatar");
             json.put("username", username);
-            json.put("password", password);
             json.put("photoId", photoId);
-            json.put("signature", siganture);
-            json.put("fileType",fileType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    //生成获取用户信息JSON对象
+    public static JSONObject generateRequestUserInfoJSON(String username) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("type", "requestUserInfo");
+            json.put("username", username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    //生成更新签名JSON对象
+    public static JSONObject generateUpdateSignatureJSON(String username, String signature) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("type", "updateSignature");
+            json.put("username", username);
+            json.put("signature", signature);
         } catch (Exception e) {
             e.printStackTrace();
         }

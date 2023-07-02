@@ -1,6 +1,7 @@
 package com.example.wechatproject.user;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,7 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wechatproject.R;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.FileUtil;
+import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.util.CurrentUserInfo;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,6 +68,7 @@ public class UserFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -80,6 +87,32 @@ public class UserFragment extends Fragment {
         TextView textViewUsername = view.findViewById(R.id.textViewUsername);
         TextView textViewSignature = view.findViewById(R.id.textViewSignature);
 
+        Client.SendJSONTask task = new Client.SendJSONTask(getContext(), new Client.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String response) {
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (jsonObject != null) {
+                    CurrentUserInfo.getInstance().setSignature(jsonObject.optString("signature"));
+                    CurrentUserInfo.getInstance().setAvatarFilePath(FileUtil.base64ToFile(getContext(),jsonObject.optString("photoId"),"1"));
+                    textViewSignature.setText(CurrentUserInfo.getSignature());
+                    imageViewAvatar.setImageURI(Uri.parse(CurrentUserInfo.getAvatarFilePath()));
+                }
+            }
+        });
+
+        task.execute(JSONHandler.generateRequestUserInfoJSON(CurrentUserInfo.getUsername()));
+
+        if(CurrentUserInfo.getSignature()!=null){
+            textViewSignature.setText(CurrentUserInfo.getSignature());
+        }
+        if(CurrentUserInfo.getAvatarFilePath() != null) {
+            imageViewAvatar.setImageURI(Uri.parse(CurrentUserInfo.getAvatarFilePath()));
+        }
         textViewUsername.setText(CurrentUserInfo.getUsername());
         return view;
     }

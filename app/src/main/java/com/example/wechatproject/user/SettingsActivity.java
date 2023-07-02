@@ -5,10 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.wechatproject.R;
 import com.example.wechatproject.login.LoginActivity;
 import com.example.wechatproject.login.RegisterActivity;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.FileUtil;
+import com.example.wechatproject.network.JSONHandler;
+import com.example.wechatproject.util.CurrentUserInfo;
 
 public class SettingsActivity extends AppCompatActivity {
 //这里需要添加每个按钮的响应
@@ -64,10 +70,17 @@ public class SettingsActivity extends AppCompatActivity {
             // 处理修改头像的逻辑
             Uri SlectedFileUri = data.getData();
             String fileType = data.getType();
-//            String response = Client.sendJSON(
-//                    generateUpdateJSON(CurrentUserInfo.getInstance().getUsername(), null,0,FileUtil.fileToBase64(SlectedFileUri),null,fileType));
-            // 如果服务器返回成功，修改头像，否则弹出错误消息
-
+            CurrentUserInfo.getInstance().setAvatarFilePath(SlectedFileUri.toString());
+            Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted(String response) {
+                    if(response.equals("success")){
+                        Toast.makeText(getApplicationContext(), "修改头像成功", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            String fileBase64 = FileUtil.fileToBase64(getApplicationContext(), SlectedFileUri);
+            sendJSONTask.execute(JSONHandler.generateUpdateAvatarJSON(CurrentUserInfo.getInstance().getUsername(), fileBase64));
         }
     }
 }

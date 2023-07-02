@@ -4,8 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -38,21 +41,30 @@ public class FileUtil {
         return filePath;
     }
 
-    public static String fileToBase64(Context context,Uri fileUri) {
+    public static String fileToBase64(Context context, Uri fileUri) {
         String base64 = "";
         try {
-            byte[] bytes = new byte[0];
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                bytes = context.getContentResolver().openInputStream(fileUri).readAllBytes();
+            InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                base64 = Base64.getEncoder().encodeToString(bytes);
-            }
-        } catch (Exception e) {
+            byteArrayOutputStream.flush();
+
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            base64 = android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT);
+
+            inputStream.close();
+            byteArrayOutputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return base64;
     }
+
 
 
     private static String generateFileName(String fileType){

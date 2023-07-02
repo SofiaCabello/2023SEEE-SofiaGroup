@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.wechatproject.R;
-import com.example.wechatproject.util.ContactAdapter;
 import com.example.wechatproject.util.DBHelper;
 
 import java.util.ArrayList;

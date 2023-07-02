@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         //启动心跳包
         HeartbeatTask heartbeatTask = new HeartbeatTask(getApplicationContext());
         Timer timer = new Timer();
-        timer.schedule(heartbeatTask, 0, 100000);
+        timer.schedule(heartbeatTask, 0, 1000);
 
         //测试数据库
         DBHelper dbHelper = new DBHelper(getApplicationContext());

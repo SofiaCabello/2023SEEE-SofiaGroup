@@ -2,6 +2,7 @@ package com.example.wechatproject.message;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,32 +14,47 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
 import com.example.wechatproject.contact.Friends_CardActivity;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.JSONHandler;
+import com.example.wechatproject.util.CurrentUserInfo;
+import com.example.wechatproject.util.DBHelper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatActivity extends AppCompatActivity {
 
     private TextView tvFriendName;
     private ImageView ivOptions;
-    private ListView messageListView;
+    private ListView chatListView;
     private EditText editTextMessage;
     private Button btnFile;
     private Button btnSend;
+    private String friendName;
+    private ChatAdapter chatAdapter;
+    private List<ChatItem> chatItemList;
+    private Timer timer;
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopTimer();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Intent intent = getIntent();
-        String friendName = intent.getStringExtra("name");
+        this.friendName = intent.getStringExtra("name");
         String avatarFilePath = intent.getStringExtra("avatarFilePath");
 
         // 初始化视图
         tvFriendName = findViewById(R.id.tvFriendName);
         ivOptions = findViewById(R.id.ivOptions);
-        messageListView = findViewById(R.id.messageListView);
+        chatListView = findViewById(R.id.messageListView);
         editTextMessage = findViewById(R.id.editTextMessage);
         btnFile = findViewById(R.id.btnFile);
         btnSend = findViewById(R.id.btnSend);
@@ -54,7 +70,14 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        // 初始化消息列表数据源
+        chatItemList = new DBHelper(getApplicationContext()).getDesignatedMessage(friendName);
 
+        // 初始化适配器
+        chatAdapter = new ChatAdapter(this, chatItemList);
+
+        // 设置适配器给ListView
+        chatListView.setAdapter(chatAdapter);
 
         // 设置发送按钮点击事件
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -62,22 +85,61 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String messageText = editTextMessage.getText().toString().trim();
                 if (!messageText.isEmpty()) {
+                    String timeStamp = String.valueOf(System.currentTimeMillis());
                     // 发送消息
-                    sendMessage(messageText);
+                    Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+                        @Override
+                        public void onTaskCompleted(String response) {
+                            DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                            dbHelper.addMessage(friendName, messageText, timeStamp, "0", "true");
+                            // 刷新消息列表
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 刷新消息列表数据源
+                                    chatItemList = dbHelper.getDesignatedMessage(friendName);
+                                    // 通知适配器数据已更新
+                                    chatAdapter.setData(chatItemList);
+                                }
+                            });
+                        }
+                    });
+                    sendJSONTask.execute(JSONHandler.generatePostMessageJSON(CurrentUserInfo.getUsername(), friendName, messageText));
                     // 清空输入框
                     editTextMessage.setText("");
                 }
             }
         });
+
+        startTimer();
     }
 
-    private void sendMessage(String messageText) {
-        // 创建消息对象，添加到消息列表中
-
-        // 刷新消息列表
-
-        // 滚动到最后一条消息
-
+    private void startTimer() {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 刷新消息列表
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 刷新消息列表数据源，并更新适配器，使得刚发送的消息能够显示在消息列表中
+                        DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                        chatItemList = dbHelper.getDesignatedMessage(friendName);
+                        System.out.println("chatItemList.size() = " + chatItemList.size());
+                        System.out.println("getCount() = " + chatAdapter.getCount());
+                        chatAdapter.setData(chatItemList);
+                    }
+                });
+            }
+        }, 0, 3000);
     }
+
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
 }
-
