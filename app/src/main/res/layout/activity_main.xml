@@ -6,35 +6,35 @@
     android:layout_height="match_parent">
 
     <!--微信顶部栏-->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#FFFEEE"
-        android:orientation="horizontal">
+        android:layout_height="50dp"
+        android:background="#FFFEEE">
 
         <!-- 微信标题 -->
         <TextView
-            android:layout_width="0dp"
             android:id="@+id/weixintext"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:text="微信"
             android:textColor="#000000"
             android:textSize="20sp"
-            android:gravity="center" />
+            android:layout_centerInParent="true" />
 
         <!-- 加好友按钮 -->
         <ImageButton
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
             android:id="@+id/image_add"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
             android:src="@drawable/add_friends"
             android:background="?android:attr/selectableItemBackground"
             android:scaleType="fitCenter"
             android:padding="10dp"
-            android:layout_gravity="center_vertical" />
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
 
-    </LinearLayout>
+    </RelativeLayout>
+
 
     <FrameLayout
         android:layout_width="match_parent"

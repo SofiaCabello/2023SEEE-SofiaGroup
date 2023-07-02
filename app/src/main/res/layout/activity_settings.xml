@@ -6,12 +6,9 @@
         android:id="@+id/imageViewAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="121dp"
-        android:layout_marginEnd="104dp"
-        android:src="@drawable/wechat_logo" />
+        android:layout_marginTop="48dp"
+        android:src="@drawable/set" />
 
     <Button
         android:id="@+id/buttonChangeAvatar"

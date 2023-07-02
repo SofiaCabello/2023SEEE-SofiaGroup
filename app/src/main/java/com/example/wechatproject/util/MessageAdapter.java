@@ -62,7 +62,7 @@ public class MessageAdapter extends ArrayAdapter<MessageItem> {
 
         if (messageItem != null) {
             // 在视图中显示消息数据
-            viewHolder.avatarImageView.setImageURI(Uri.parse(messageItem.getAvatarFilePath()));
+            //viewHolder.avatarImageView.setImageURI(Uri.parse(messageItem.getAvatarFilePath()));
             viewHolder.nameTextView.setText(messageItem.getName());
             if (Objects.equals(messageItem.getType(), "0")) {
                 viewHolder.messageTextView.setText(messageItem.getLatestMessage());
