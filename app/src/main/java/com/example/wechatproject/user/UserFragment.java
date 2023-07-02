@@ -1,9 +1,13 @@
 package com.example.wechatproject.user;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -20,6 +24,8 @@ import com.example.wechatproject.network.JSONHandler;
 import com.example.wechatproject.util.CurrentUserInfo;
 
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,6 +112,10 @@ public class UserFragment extends Fragment {
         });
 
         task.execute(JSONHandler.generateRequestUserInfoJSON(CurrentUserInfo.getUsername()));
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
 
         if(CurrentUserInfo.getSignature()!=null){
             textViewSignature.setText(CurrentUserInfo.getSignature());
