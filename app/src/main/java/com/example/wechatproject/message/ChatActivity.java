@@ -2,6 +2,7 @@ package com.example.wechatproject.message;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,16 +90,16 @@ public class ChatActivity extends AppCompatActivity {
                     Client.SendJSONTask sendJSONTask = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
                         @Override
                         public void onTaskCompleted(String response) {
+                            DBHelper dbHelper = new DBHelper(ChatActivity.this);
+                            dbHelper.addMessage(friendName, messageText, timeStamp, "0", "true");
                             // 刷新消息列表
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     // 刷新消息列表数据源
-                                    DBHelper dbHelper = new DBHelper(ChatActivity.this);
-                                    dbHelper.addMessage(friendName,messageText,timeStamp,"0","true");
                                     chatItemList = dbHelper.getDesignatedMessage(friendName);
                                     // 通知适配器数据已更新
-                                    chatAdapter.notifyDataSetChanged();
+                                    chatAdapter.setData(chatItemList);
                                 }
                             });
                         }
@@ -113,7 +114,7 @@ public class ChatActivity extends AppCompatActivity {
         startTimer();
     }
 
-    private void startTimer(){
+    private void startTimer() {
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -122,15 +123,16 @@ public class ChatActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // 刷新消息列表数据源
+                        // 刷新消息列表数据源，并更新适配器，使得刚发送的消息能够显示在消息列表中
                         DBHelper dbHelper = new DBHelper(ChatActivity.this);
                         chatItemList = dbHelper.getDesignatedMessage(friendName);
-                        // 通知适配器数据已更新
-                        chatAdapter.notifyDataSetChanged();
+                        System.out.println("chatItemList.size() = " + chatItemList.size());
+                        System.out.println("getCount() = " + chatAdapter.getCount());
+                        chatAdapter.setData(chatItemList);
                     }
                 });
             }
-        }, 0, 1000);
+        }, 0, 3000);
     }
 
     private void stopTimer() {

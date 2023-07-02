@@ -9,6 +9,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
+import com.example.wechatproject.network.Client;
+import com.example.wechatproject.network.JSONHandler;
+import com.example.wechatproject.util.CurrentUserInfo;
 
 public class SignatureActivity extends AppCompatActivity {
     private EditText editTextSignature;
@@ -32,15 +35,18 @@ public class SignatureActivity extends AppCompatActivity {
 
     private void saveSignature() {
         String newSignature = editTextSignature.getText().toString().trim();
-
-        // 模拟保存个性签名的操作，这里假设成功保存
-        boolean saveSuccess = true;
-
-        if (saveSuccess) {
-            Toast.makeText(this, "个性签名修改成功，请返回界面查看", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "个性签名修改失败", Toast.LENGTH_SHORT).show();
-        }
+        CurrentUserInfo.getInstance().setSignature(newSignature);
+        Client.SendJSONTask task = new Client.SendJSONTask(getApplicationContext(), new Client.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(String response) {
+                if(response.equals("success")) {
+                    Toast.makeText(getApplicationContext(), "个性签名修改成功，请返回界面查看", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "个性签名修改失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        task.execute(JSONHandler.generateUpdateSignatureJSON(CurrentUserInfo.getUsername(), newSignature));
     }
 }
 

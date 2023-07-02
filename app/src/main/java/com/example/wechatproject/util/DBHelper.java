@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context, "wechat.db", null, 7);
+        super(context, "wechat.db", null, 10);
     }
 
     private static final String CREATE_CONTACTS_TABLE
@@ -83,7 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     String username = cursor.getString(usernameIndex);
                     String photoId = cursor.getString(photoIdIndex);
                     String signature = cursor.getString(signatureIndex);
-
+                    System.out.println("Contact's photopath is "+ photoId);
                     //System.out.println("username: " + username + " photoId: " + photoId + " signature: " + signature);
                     // 创建联系人条目并添加到结果列表中
                     ContactItem entry = new ContactItem(username, signature, photoId);
@@ -118,7 +118,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     String time = cursor.getString(timeIndex);
                     String type = cursor.getString(typeIndex);
                     boolean isMeSend = cursor.getString(isMeIndex).equals("true");
-                    System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
+                   // System.out.println("****"+content+" "+time+" "+type+" "+" "+isMeSend+"****");
 
                     if(isMeSend){
                         Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
@@ -173,17 +173,20 @@ public class DBHelper extends SQLiteOpenHelper {
                     String content = cursor.getString(contentIndex);
                     String time = cursor.getString(timeIndex);
                     String type = cursor.getString(typeIndex);
+                    boolean isMeSend = cursor.getString(isMeIndex).equals("true");
 
-                    Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
                     String filePath = "";
-                    if (cursor1 != null && cursor1.moveToFirst()) {
-                        int photoIdIndex = cursor1.getColumnIndex("photoId");
-                        if (photoIdIndex != -1) {
-                            filePath = cursor1.getString(photoIdIndex);
+                    if(isMeSend) {
+                        Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
+                        if (cursor1 != null && cursor1.moveToFirst()) {
+                            int photoIdIndex = cursor1.getColumnIndex("photoId");
+                            if (photoIdIndex != -1) {
+                                filePath = cursor1.getString(photoIdIndex);
+                            }
                         }
+                    }else{
+                        filePath = CurrentUserInfo.getAvatarFilePath();
                     }
-                    //System.out.println("username: " + username + " content: " + content + " time: " + time + " type: " + type);
-                    // 创建联系人条目并添加到结果列表中
                     MessageItem entry = new MessageItem(filePath, username, content, time, type);
                     messageResult.add(entry);
                 } while (cursor.moveToNext());
@@ -195,48 +198,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return messageResult;
     }
-//        System.out.println("----getLatestMessage----");
-//        List<MessageItem> messageResult = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        String currentUsername = CurrentUserInfo.getUsername();
-//        Cursor cursor = db.rawQuery("SELECT username, content, time, type FROM message WHERE currentUsername = ? GROUP BY username", new String[]{currentUsername});
-//        if (cursor != null && cursor.moveToFirst()) {
-//            int usernameIndex = cursor.getColumnIndex("username");
-//            int contentIndex = cursor.getColumnIndex("content");
-//            int timeIndex = cursor.getColumnIndex("time");
-//            int typeIndex = cursor.getColumnIndex("type");
-//            if (usernameIndex != -1 && contentIndex != -1 && timeIndex != -1 && typeIndex != -1) {
-//                do {
-//                    // 从游标中读取每个字段的值
-//                    String username = cursor.getString(usernameIndex);
-//                    String content = cursor.getString(contentIndex);
-//                    String time = cursor.getString(timeIndex);
-//                    String type = cursor.getString(typeIndex);
-//
-//                    Cursor cursor1 = db.rawQuery("SELECT photoId FROM contacts WHERE currentUsername = ? AND username = ?", new String[]{currentUsername, username});
-//                    String filePath = "";
-//                    if (cursor1 != null && cursor1.moveToFirst()) {
-//                        int photoIdIndex = cursor1.getColumnIndex("photoId");
-//                        if (photoIdIndex != -1) {
-//                            filePath = cursor1.getString(photoIdIndex);
-//                        }
-//                    }
-//                    //System.out.println("username: " + username + " content: " + content + " time: " + time + " type: " + type);
-//                    // 创建联系人条目并添加到结果列表中
-//                    MessageItem entry = new MessageItem(filePath, username, content, time, type);
-//                    messageResult.add(entry);
-//                } while (cursor.moveToNext());
-//            }
-//        }
-//
-//        if (cursor != null)
-//            cursor.close();
-//        System.out.println(messageResult.get(0).getName());
-//
-//        return messageResult;
-//    }
-
-
 
 
     // 测试方法，用于展示数据库中的内容

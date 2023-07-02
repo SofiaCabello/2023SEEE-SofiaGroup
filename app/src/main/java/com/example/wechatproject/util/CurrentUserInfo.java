@@ -10,6 +10,8 @@ package com.example.wechatproject.util;
 public class CurrentUserInfo {
     private static CurrentUserInfo instance;
     private static String username;
+    private static String avatarFilePath;
+    private static String signature;
 
     private CurrentUserInfo() {}
 
@@ -20,11 +22,27 @@ public class CurrentUserInfo {
         return instance;
     }
 
+    public static String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        CurrentUserInfo.signature = signature;
+    }
+
+    public static String getAvatarFilePath() {
+        return avatarFilePath;
+    }
+
+    public void setAvatarFilePath(String avatarFilePath) {
+        CurrentUserInfo.avatarFilePath = avatarFilePath;
+    }
+
     public static String getUsername() {
         return username;
     }
 
     public void setUsername(String username){
-        this.username = username;
+        CurrentUserInfo.username = username;
     }
 }
