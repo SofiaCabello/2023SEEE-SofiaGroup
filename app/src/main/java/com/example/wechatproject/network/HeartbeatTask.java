@@ -44,11 +44,13 @@ public class HeartbeatTask extends TimerTask {
                     List<String> jsonList = splitJSONStrings(response);
                     for (String json : jsonList) {
                         try {
+                            System.out.println("原始json"+json);
                             JSONObject jsonObject = new JSONObject(json);
                             String type = jsonObject.optString("type");
                             String sourceUsername = jsonObject.optString("sendId");
                             String TS = jsonObject.optString("TS");
-                            String content = jsonObject.optString("content");
+                            String content = jsonObject.getString("content");
+                            System.out.println("content"+content);
                             if(type.equals("5")){
                                 // 发送确认信息，确认好友的信息
                                 Client.SendJSONTask jsonTask = new Client.SendJSONTask(context, new Client.OnTaskCompleted() {

@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(heartbeatTask, 0, 1000);
 
         //测试数据库
-        DBHelper dbHelper = new DBHelper(getApplicationContext());
-        dbHelper.showAll();
+        //DBHelper dbHelper = new DBHelper(getApplicationContext());
+        //dbHelper.showAll();
 
         //绑定控件
         fragmentContainer = findViewById(R.id.fragmentContainer);

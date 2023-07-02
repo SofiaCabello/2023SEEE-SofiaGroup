@@ -19,27 +19,28 @@ import java.util.Objects;
 public class FileUtil {
 
 
-    public static String base64ToFile(Context context,String base64, String fileType){
+    public static String base64ToFile(Context context, String base64, String fileType) {
         String filePath = "";
-        try{
-            byte[] bytes = new byte[0];
+        try {
+            byte[] bytes;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                bytes = Base64.getDecoder().decode(base64);
-            }else{
+                bytes = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
+            } else {
                 bytes = android.util.Base64.decode(base64, android.util.Base64.DEFAULT);
             }
             String fileName = generateFileName(fileType);
             filePath = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-            System.out.println("file://"+context.getFilesDir().getAbsolutePath());
+            System.out.println("file://" + context.getFilesDir().getAbsolutePath());
             File file = new File(filePath);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(bytes);
             fos.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return filePath;
     }
+
 
     public static String fileToBase64(Context context, Uri fileUri) {
         String base64 = "";

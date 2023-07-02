@@ -1,6 +1,7 @@
 package com.example.wechatproject.message;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.wechatproject.R;
@@ -78,6 +80,17 @@ public class ChatActivity extends AppCompatActivity {
 
         // 设置适配器给ListView
         chatListView.setAdapter(chatAdapter);
+        btnFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //启动文件选择器
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");//无类型限制
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);//不允许多选
+                startActivityForResult(intent, 1);
+            }
+        });
 
         // 设置发送按钮点击事件
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -142,4 +155,12 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK && requestCode == 1){
+            Uri uri = data.getData();
+
+        }
+    }
 }
